@@ -22,11 +22,20 @@ RUN apt-get update \
       php5-mcrypt \
       php5-curl \
       php5-cli \
+      supervisor \
       vim \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up custom config files
+ADD files/nginx_default /etc/nginx/sites-available/default
+ADD files/nginx.conf /etc/nginx/nginx.conf
 ADD files/php.ini /etc/php5/fpm/php.ini
+ADD files/php_www.conf /etc/php5/fpm/pool.d/www.conf
+ADD files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Open up our ports
 EXPOSE 80 3306
+
+# Start our services
+RUN mkdir -p /var/log/supervisor
+# CMD ["/usr/bin/supervisord"]

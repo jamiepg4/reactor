@@ -1,0 +1,72 @@
+server {
+        listen 80 default_server;
+
+        set $root $host;
+
+        client_max_body_size 50M;
+
+        if ( !-d /srv/www/$root ) {
+                set $root 'default';
+        }
+
+        # For WordPress develop.
+        if ( -d /srv/www/$root/src ) {
+                set $root $root/src;
+        }
+
+        include /srv/vhosts/nginx-additions*.conf;
+
+        root /srv/www/$root;
+
+        index index.php index.html;
+
+        # rewrite for multiple sub-domain sets
+        if ( -d /srv/www/$root/wordpress ) {
+                rewrite ^(/wp-(admin|includes)/(.*))$ /wordpress$1 last;
+                rewrite ^(/wp-[^/]*\.php)$ /wordpress$1 last;
+        }
+
+        # rewrite for multisite in subdirs, e.g. example.com/subsite1/
+        # if the file doest exist for wp-admin/* or wp-*.php, try looking in the parent dir
+        if ( !-e $request_filename ) {
+                rewrite /wp-admin$ $scheme://$host$uri/ permanent;
+                rewrite ^(/[^/]+)?(/wp-.*) $2 last;
+                rewrite ^(/[^/]+)?(/.*\.php) $2 last;
+        }
+
+        # wordpress multisite files handler (this is technically legacy but
+        # still used on a lot of mutlisite installs)
+        location ~ ^(/[^/]+/)?files/(.+) {
+                try_files $uri /wp-includes/ms-files.php?file=$2 ;
+                access_log off; log_not_found off; expires max;
+        }
+
+
+        # Block all web requests to hidden directories
+        location ~ /\. {
+                deny all;
+        }
+
+        # Block access to build scripts.
+        location ~* /(Gruntfile\.js|package\.json|node_modules) {
+                deny all;
+                return 404;
+        }
+
+        location / {
+                try_files $uri $uri/ /index.php?$args;
+        }
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        location ~ \.php$ {
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+
+                # With php5-cgi alone:
+                fastcgi_pass 127.0.0.1:9000;
+                # With php5-fpm:
+                fastcgi_index index.php;
+                include fastcgi_params;
+        }
+
+}
