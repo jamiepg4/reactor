@@ -64,4 +64,4 @@ EXPOSE 80 3306
 
 # Start our services
 RUN mkdir -p /var/log/supervisor
-# CMD ["/usr/bin/supervisord"]
+CMD /usr/bin/supervisord -n
