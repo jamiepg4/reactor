@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = $vb_hostname
   config.vm.network :private_network, ip: $vb_ip
 
-  config.vm.synced_folder "./config", "/home/core/config", create: true, id: "core", nfs: true, mount_options: ['nolock,vers=3,udp']
+  config.vm.synced_folder "./config", "/home/core/config", create: true, id: "core", mount_options: ['nolock,vers=3,udp']
 
   config.vm.provision :shell, privileged: false, inline: <<-EOS
     docker pull fusionengineering/reactor:latest
