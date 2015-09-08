@@ -1,6 +1,16 @@
 sudo: required
+
 notifications:
   on_success: never
   on_failure: change
+
 services:
   - docker
+
+before_install:
+  - docker build -t fusionengineering/reactor config
+  # Remaining setup steps
+
+script:
+  - echo 'hello world'
+  # Test that WordPress is running
