@@ -51,6 +51,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :private_network, ip: $vb_ip
 
   config.vm.synced_folder "./config", "/home/core/config", create: true, id: "core", mount_options: ['nolock,vers=3,udp']
+  config.vm.synced_folder "./theme", "/home/core/theme", create: true, id: "theme", mount_options: ['nolock,vers=3,udp']
 
   # Provisioning scripts to conditionally run on "vagrant provision"
   config.vm.provision :shell, privileged: false, inline: <<-EOS
@@ -58,6 +59,8 @@ Vagrant.configure("2") do |config|
   EOS
 
   # Provisioning scripts needing to always be run
-  config.vm.provision :shell, inline: "docker run -d -p 80:80 -p 3306:3306 fusionengineering/reactor", run: "always"
+  config.vm.provision :shell, run: "always", inline: <<-EOS
+    docker run -d -p 80:80 -p 3306:3306 -v /home/core/theme:/srv/www/reactor.dev/wp-content/themes/fusion-theme fusionengineering/reactor
+  EOS
 
 end
