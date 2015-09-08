@@ -52,9 +52,12 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder "./config", "/home/core/config", create: true, id: "core", mount_options: ['nolock,vers=3,udp']
 
+  # Provisioning scripts to conditionally run on "vagrant provision"
   config.vm.provision :shell, privileged: false, inline: <<-EOS
     docker pull fusionengineering/reactor:latest
-    docker run -p 80:80 -p 3306:3306 fusionengineering/reactor
   EOS
+
+  # Provisioning scripts needing to always be run
+  config.vm.provision :shell, inline: "docker run -d -p 80:80 -p 3306:3306 fusionengineering/reactor", run: "always"
 
 end
