@@ -54,7 +54,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :shell, privileged: false, inline: <<-EOS
     docker pull fusionengineering/reactor:latest
-    docker run fusionengineering/reactor
+    docker run -p 80:80 -p 3306:3306 fusionengineering/reactor
   EOS
 
 end
