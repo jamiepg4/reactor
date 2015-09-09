@@ -61,6 +61,19 @@ RUN sed -i -e "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf \
       --admin_email=admin@example.org
 RUN git clone https://github.com/Automattic/vip-mu-plugins-public.git wp-content/mu-plugins
 
+# Install plugins from VIP shared plugins repo
+WORKDIR /srv/www/reactor.dev/wp-content/plugins
+RUN svn co https://vip-svn.wordpress.com/plugins/bitly/
+RUN svn co https://vip-svn.wordpress.com/plugins/cache-nav-menu/
+RUN svn co https://vip-svn.wordpress.com/plugins/co-authors-plus/
+RUN svn co https://vip-svn.wordpress.com/plugins/fieldmanager/
+RUN svn co https://vip-svn.wordpress.com/plugins/msm-sitemap/
+RUN svn co https://vip-svn.wordpress.com/plugins/safe-redirect-manager/
+RUN svn co https://vip-svn.wordpress.com/plugins/wpcom-thumbnail-editor/
+RUN svn co https://vip-svn.wordpress.com/plugins/wpcom-related-posts/
+RUN svn co https://vip-svn.wordpress.com/plugins/wp-help/
+RUN svn co https://vip-svn.wordpress.com/plugins/zoninator/
+
 # Open up our ports
 EXPOSE 80 3306
 
