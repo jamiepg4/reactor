@@ -9,6 +9,7 @@ RUN apt-get update \
       autojump \
       ca-certificates \
       curl \
+      git \
       imagemagick \
       memcached \
       mysql-client \
@@ -58,6 +59,7 @@ RUN sed -i -e "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf \
       --admin_user=admin \
       --admin_password=admin \
       --admin_email=admin@example.org
+RUN git clone https://github.com/Automattic/vip-mu-plugins-public.git wp-content/mu-plugins
 
 # Open up our ports
 EXPOSE 80 3306

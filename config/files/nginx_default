@@ -53,6 +53,12 @@ server {
                 return 404;
         }
 
+        location /_static/ {
+                fastcgi_pass 127.0.0.1:9000;
+                include fastcgi_params;
+                fastcgi_param SCRIPT_FILENAME /srv/www/reactor.dev/wp-content/mu-plugins/http-concat/ngx-http-concat.php;
+        }
+
         location / {
                 try_files $uri $uri/ /index.php?$args;
         }
