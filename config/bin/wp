@@ -2,5 +2,5 @@
 
 cid=$(docker ps -q)
 if [[ ! $cid =~ $'\n' ]]; then
-  docker exec $cid wp --allow-root ${@:2}
+  docker exec $cid wp --allow-root ${@:1}
 fi
