@@ -68,6 +68,7 @@ ADD files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
+ADD files/wp-cli.yml /srv/www/reactor.dev/wp-cli.yml
 
 # Set up WordPress
 WORKDIR /srv/www/reactor.dev
