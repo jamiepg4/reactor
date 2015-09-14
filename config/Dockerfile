@@ -45,6 +45,7 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 RUN mkdir -p /srv/www \
 	&& svn co https://core.svn.wordpress.org/trunk /srv/www/reactor.dev
 WORKDIR /srv/www/reactor.dev
+ADD files/reactor-php-constants reactor-php-constants
 RUN sed -i -e "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf \
     && service mysql start \
     && mysql -uroot -p -e \
@@ -53,6 +54,8 @@ RUN sed -i -e "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf \
       --dbname=reactor \
       --dbuser=root \
       --dbhost=localhost \
+      --extra-php < reactor-php-constants \
+    && rm reactor-php-constants \
     && wp core multisite-install --allow-root \
       --title="Reactor" \
       --url=http://reactor.dev \
