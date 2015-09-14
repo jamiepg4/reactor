@@ -2,5 +2,5 @@
 
 cid=$(docker ps -q)
 if [[ ! $cid =~ $'\n' ]]; then
-  docker exec $cid phpunit ${@:2}
+  docker exec $cid phpunit ${@:1}
 fi
