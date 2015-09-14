@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cid=$(docker ps -q)
+if [[ ! $cid =~ $'\n' ]]; then
+  docker exec $cid phpunit ${@:2}
+fi

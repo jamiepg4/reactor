@@ -53,6 +53,12 @@ RUN svn co https://vip-svn.wordpress.com/plugins/wpcom-related-posts/
 RUN svn co https://vip-svn.wordpress.com/plugins/wp-help/
 RUN svn co https://vip-svn.wordpress.com/plugins/zoninator/
 
+# Install testing tools
+RUN curl -O  https://phar.phpunit.de/phpunit.phar \
+    && chmod +x phpunit.phar \
+    && mv phpunit.phar /usr/local/bin/phpunit
+RUN git clone --depth 1 git://develop.git.wordpress.org/ /srv/www/wordpress-develop.dev
+
 ##
 # Operations not requiring network operations (e.g. configuration)
 ##
@@ -63,19 +69,21 @@ ADD files/nginx.conf /etc/nginx/nginx.conf
 ADD files/php.ini /etc/php5/fpm/php.ini
 ADD files/php_www.conf /etc/php5/fpm/pool.d/www.conf
 ADD files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN sed -i -e "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
 # Set up WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-# Set up WordPress
+# Set up WordPress and WordPress develop
 WORKDIR /srv/www/reactor.dev
 ADD files/reactor-php-constants reactor-php-constants
-RUN sed -i -e "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf \
-    && service mysql start \
+RUN service mysql start \
     && mysql -uroot -p -e \
       "CREATE DATABASE reactor DEFAULT CHARACTER SET utf8" \
+    && mysql -uroot -p -e \
+      "CREATE DATABASE wordpress_tests DEFAULT CHARACTER SET utf8" \
     && wp core config --allow-root \
       --dbname=reactor \
       --dbuser=root \
