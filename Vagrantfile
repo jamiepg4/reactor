@@ -61,6 +61,7 @@ Vagrant.configure("2") do |config|
   # Provisioning scripts needing to always be run
   config.vm.provision :shell, run: "always", inline: <<-EOS
     docker run -d -p 80:80 -p 3306:3306 -v /home/core/theme:/srv/www/reactor.dev/wp-content/themes/fusion-theme fusionengineering/reactor
+    rm -f ~/.bashrc; echo 'PATH="~/config/bin:{$PATH}"; export PATH' > ~/.bashrc
   EOS
 
 end
