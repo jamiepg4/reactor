@@ -1,6 +1,10 @@
 FROM ubuntu:14.04
 MAINTAINER fusioneng <tech@fusion.net>
 
+##
+# Operations requiring network connection
+##
+
 # Install necessary software
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -48,6 +52,10 @@ RUN svn co https://vip-svn.wordpress.com/plugins/wpcom-thumbnail-editor/
 RUN svn co https://vip-svn.wordpress.com/plugins/wpcom-related-posts/
 RUN svn co https://vip-svn.wordpress.com/plugins/wp-help/
 RUN svn co https://vip-svn.wordpress.com/plugins/zoninator/
+
+##
+# Operations not requiring network operations (e.g. configuration)
+##
 
 # Set up custom config files
 ADD files/nginx_default /etc/nginx/sites-available/default
