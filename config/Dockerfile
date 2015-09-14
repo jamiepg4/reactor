@@ -53,12 +53,13 @@ RUN sed -i -e "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf \
       --dbname=reactor \
       --dbuser=root \
       --dbhost=localhost \
-    && wp core install --allow-root \
+    && wp core multisite-install --allow-root \
       --title="Reactor" \
       --url=http://reactor.dev \
       --admin_user=admin \
       --admin_password=admin \
-      --admin_email=admin@example.org
+      --admin_email=admin@example.org \
+    && wp site create --slug=fusion --title=Fusion --allow-root
 RUN git clone https://github.com/Automattic/vip-mu-plugins-public.git wp-content/mu-plugins
 
 # Install plugins from VIP shared plugins repo
